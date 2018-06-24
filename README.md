@@ -29,11 +29,11 @@ optional arguments:
  
  ## Example 
  
-IV :   ```0xae39d6```
+-iv :   ```0xae39d6```
 
-SEND_CHALLENGE :   ```e4:77:8a...ff:5d```
+--send-challenge :   ```e4:77:8a...ff:5d```
 
-RESPONSE_CHALLENGE :   ```e4:77:8a...ff:5d```
+--response-challenge :   ```e4:77:8a...ff:5d```
 
 the **SEND_CHALLENGE** must be **128** bits long and the **RESPONSE_CHALLENGE** must be **136** bits long.
  
