@@ -1,11 +1,11 @@
 # WEP
 
-##Description
+## Description
 
 Python implementation to brute force shared key authentication of the WEP protocol. 
 
 
-##Usage
+## Usage
 
 
 
@@ -27,11 +27,13 @@ optional arguments:
                         
  ```
  
- ##Example 
+ ## Example 
  
-IV :   0xae39d6 or   \xae39d6
-SEND_CHALLENGE :   e4:77:8a...ff:5d
-RESPONSE_CHALLENGE :   e4:77:8a...ff:5d 
+IV :   ```0xae39d6```
+
+SEND_CHALLENGE :   ```e4:77:8a...ff:5d```
+
+RESPONSE_CHALLENGE :   ```e4:77:8a...ff:5d```
 
 the **SEND_CHALLENGE** must be **128** bits long and the **RESPONSE_CHALLENGE** must be **136** bits long.
  
