@@ -2,7 +2,7 @@
 
 ## Description
 
-Python implementation to brute force shared key authentication of the WEP protocol. 
+Python script to brute force shared key authentication of the WEP protocol. 
 
 
 ## Usage
