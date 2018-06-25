@@ -2,7 +2,7 @@ import sys
 import RC4
 import string
 from multiprocessing import Pool
-from time import time
+import time
 import argparse
 
 
@@ -19,7 +19,6 @@ KEY_STREAM = ""
 CHALLENGE =""
 CHALLENGE_LEN = 136
 
-count = 0
 
 def unconvert_key(key):
     res=""
@@ -42,12 +41,6 @@ def check(key):
     Encrypt the IV with the given key and checks with the keystream
     """
 
-    global count
-    count += 1
-
-    if count % 10000 == 0: 
-        print("{0} password tried".format(count))
-
     rc4 = RC4.RC4(key)
 
     keystream = rc4.getKeystream(CHALLENGE_LEN)[16:]
@@ -55,7 +48,8 @@ def check(key):
 
     if keystream == KEY_STREAM:
         secret_key = unconvert_key(key)
-        print('Key: {0}'.format(secret_key))
+        print('\n -----KEY FOUNDED----\n\nKey : {0}\n'.format(secret_key))
+        raise Exception("Key founded stopping pool")
 
 
 def make_key(key):
@@ -76,8 +70,13 @@ def convert_key(s):
 
 def worker(base):
     
-    key = make_key(base)
-    check(key)
+    try:
+        key = make_key(base)
+        check(key)
+    except (KeyboardInterrupt, Exception):
+        print("Exiting...")
+        #sys.exit(1)
+
 
 
 def parallel():
@@ -85,10 +84,28 @@ def parallel():
     Starts a number of threads that search through the key space
     """
     p = Pool(CPU_COUNT)
+    found = False
+    interrupt = False
     
-    p.map(worker, genPass())
-    p.close()
+    try:
+        p.map_async(worker, genPass()).get(9999999)
+        #p.map(worker, genPass())
+
+    except KeyboardInterrupt:
+        print("Caught KeyboardInterrupt, terminating workers")
+        p.terminate()
+        interrupt = True
+    except Exception:
+        print "Key founded stopping pool"
+        p.terminate()
+        found = True
+    else:
+        p.close()
     p.join()
+
+    if not found and not interrupt:
+        print "Reach end of file"
+        print "Key not founded"
 
 
 
@@ -143,6 +160,8 @@ if __name__ == "__main__":
 
         print "Starting..."
         parallel()
-        print "Reach end of password file..."
+
+
+
 
 
