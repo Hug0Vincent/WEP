@@ -4,6 +4,7 @@ import string
 from multiprocessing import Pool
 import time
 import argparse
+from tqdm import tqdm
 
 
 
@@ -18,6 +19,8 @@ CPU_COUNT= 1
 KEY_STREAM = ""
 CHALLENGE =""
 CHALLENGE_LEN = 136
+
+pbar = None
 
 
 def unconvert_key(key):
@@ -73,7 +76,8 @@ def worker(base):
     try:
         key = make_key(base)
         check(key)
-    except (KeyboardInterrupt, Exception):
+        pbar.update(1)
+    except KeyboardInterrupt:
         print("Exiting...")
         #sys.exit(1)
 
@@ -96,12 +100,14 @@ def parallel():
         p.terminate()
         interrupt = True
     except Exception:
+        pbar.close()
         print "Key founded stopping pool"
         p.terminate()
         found = True
     else:
         p.close()
     p.join()
+    
 
     if not found and not interrupt:
         print "Reach end of file"
@@ -158,8 +164,13 @@ if __name__ == "__main__":
         FILE = args.password_file
         KEY_STREAM = trame_keystream(args.send_challenge,args.response_challenge)
 
+        num_lines = sum(1 for line in FILE)
+        FILE.seek(0)
+
         print "Starting..."
+        pbar = tqdm(total=num_lines, mininterval=1)
         parallel()
+        
 
 
 
